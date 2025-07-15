@@ -1,10 +1,18 @@
 package com.tdd.service;
 
 import com.tdd.model.User;
+import com.tdd.repository.UserRepository;
 
 import java.util.UUID;
 
 public class UserServiceImpl implements UserService{
+
+    UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     public User createUser(String firstName, String lastName,
                            String email,
@@ -15,6 +23,12 @@ public class UserServiceImpl implements UserService{
 
         if(firstName == null || firstName.isBlank())
             throw  new IllegalArgumentException("firstName can't be empty");
-        return new User(firstName, lastName, email, UUID.randomUUID().toString());
+
+        User user = new User(firstName, lastName, email, UUID.randomUUID().toString());
+        boolean isUserCreated = userRepository.save(user);
+
+        if(!isUserCreated) throw new UserServiceException("User is not created");
+
+        return user;
     }
 }
