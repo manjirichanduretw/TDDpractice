@@ -1,15 +1,27 @@
 package com.tdd.service;
 
 import com.tdd.model.User;
+import com.tdd.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    UserService userService;
+    @InjectMocks
+    UserServiceImpl userService;
+//    mock repository created and get injected here
+    @Mock
+    UserRepository userRepository;
     String firstName;
     String lastName;
     String email;
@@ -18,7 +30,6 @@ public class UserServiceTest {
 
     @BeforeEach
     void init(){
-        userService = new UserServiceImpl();
         firstName = "Manjiri";
         lastName = "Chandure";
         email = "chanduremanjiri@gmail.com";
@@ -29,7 +40,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("User Object Created")
     void testCreateUser_WhenUserDetailsProvided_ReturnUserObject(){
-
+//  arrange
+        when(userRepository.save(any(User.class))).thenReturn(true);
 //        Act
         User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
 //        Assert
@@ -38,6 +50,10 @@ public class UserServiceTest {
         assertEquals(lastName, user.getLastName(), "lastName does not get set");
         assertEquals(email, user.getEmail(), "email does not get set");
         assertNotNull(user.getId(), "UserId is missing");
+//        by default it verifies one only
+        verify(userRepository, times(1))
+                .save(Mockito.any(User.class));
+
 
     }
 
