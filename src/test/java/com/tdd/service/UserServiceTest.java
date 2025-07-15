@@ -92,19 +92,14 @@ public class UserServiceTest {
 
     }
 
-//    @Test
-//    void testCreateUser_whenUserCreated_shouldReturnSameFirstName(){
-//
-//        UserService userService = new UserServiceImpl();
-//        String firstName = "Manjiri";
-//        String lastName = "Chandure";
-//        String email = "chanduremanjiri@gmail.com";
-//        String password = "12345668";
-//        String repeate_Password = "12345668";
-//
-//        User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
-//
-//        assertEquals(firstName, user.getFirstName(), "firstName does not get set!");
-//
-//    }
+    @DisplayName("id save() method throws runtime exception then it should through UserServiceException is thrown")
+    @Test
+    void testCreateUser_whenSaveMethodThrowsException_thenThrowsUserServiceException(){
+
+        when(userRepository.save(any(User.class))).thenThrow(RuntimeException.class);
+
+        assertThrows(UserServiceException.class, ()->{
+            User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
+        }, "UseServicerException should be thrown");
+    }
 }
