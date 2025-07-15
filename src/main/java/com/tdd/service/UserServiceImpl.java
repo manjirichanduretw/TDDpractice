@@ -7,6 +7,6 @@ public class UserServiceImpl implements UserService{
     public User createUser(String firstName, String lastName,
                            String email,
                            String password, String repeate_Password){
-        return new User(firstName);
+        return new User(firstName, lastName, email);
     }
 }
