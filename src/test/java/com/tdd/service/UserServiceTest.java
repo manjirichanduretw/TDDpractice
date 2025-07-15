@@ -22,6 +22,9 @@ public class UserServiceTest {
 //    mock repository created and get injected here
     @Mock
     UserRepository userRepository;
+    @Mock
+    EmailVerificationServiceImpl emailVerificationService;
+
     String firstName;
     String lastName;
     String email;
@@ -101,5 +104,24 @@ public class UserServiceTest {
         assertThrows(UserServiceException.class, ()->{
             User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
         }, "UseServicerException should be thrown");
+    }
+
+    @Test
+    @DisplayName("EmailNotificationException handle")
+    void testCreateUser_whenEmailNotificationExceptionThrown_thenThrowsUserServiceException(){
+
+        when(userRepository.save(any(User.class))).thenReturn(true);
+
+        doThrow(EmailVerificationServiceException.class)
+                .when(emailVerificationService)
+                .scheduleEmailConfirmation(any(User.class));
+
+//        doNothing().when(emailVerificationService).scheduleEmailConfirmation(any(User.class));
+
+        assertThrows(UserServiceException.class, ()->{
+            userService.createUser(firstName, lastName, email, password, repeate_Password);
+        }, "UserServiceException should get thrown!");
+
+        verify(emailVerificationService, times(1)).scheduleEmailConfirmation(any(User.class));
     }
 }

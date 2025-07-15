@@ -5,24 +5,26 @@ import com.tdd.repository.UserRepository;
 
 import java.util.UUID;
 
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
+    EmailVerificationService emailVerificationService;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, EmailVerificationService emailVerificationService) {
         this.userRepository = userRepository;
+        this.emailVerificationService = emailVerificationService;
     }
 
 
     public User createUser(String firstName, String lastName,
                            String email,
-                           String password, String repeate_Password){
-        if(firstName.isEmpty() || lastName.isEmpty() ||
-            email.isEmpty() || password.isEmpty() || repeate_Password.isEmpty())
+                           String password, String repeate_Password) {
+        if (firstName.isEmpty() || lastName.isEmpty() ||
+                email.isEmpty() || password.isEmpty() || repeate_Password.isEmpty())
             throw new IllegalArgumentException("User fields can't be empty");
 
-        if(firstName == null || firstName.isBlank())
-            throw  new IllegalArgumentException("firstName can't be empty");
+        if (firstName == null || firstName.isBlank())
+            throw new IllegalArgumentException("firstName can't be empty");
 
         User user = new User(firstName, lastName, email, UUID.randomUUID().toString());
 
@@ -33,7 +35,13 @@ public class UserServiceImpl implements UserService{
             throw new UserServiceException(e.getMessage());
         }
 
-        if(!isUserCreated) throw new UserServiceException("User is not created");
+        if (!isUserCreated) throw new UserServiceException("User is not created");
+
+        try {
+            emailVerificationService.scheduleEmailConfirmation(user);
+        } catch (RuntimeException e) {
+            throw new UserServiceException(e.getMessage());
+        }
 
         return user;
     }
