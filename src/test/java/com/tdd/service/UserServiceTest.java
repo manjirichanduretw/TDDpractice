@@ -11,8 +11,13 @@ public class UserServiceTest {
     void testCreateUser_WhenUserDetailsProvided_ReturnUserObject(){
 //            Arrange
         UserService userService = new UserServiceImpl();
+        String firstName = "Manjiri";
+        String lastName = "Chandure";
+        String email = "chanduremanjiri@gmail.com";
+        String password = "12345668";
+        String repeate_Password = "12345668";
 //        Act
-        User user = userService.createUser();
+        User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
 //        Assert
         assertNotNull(user, "User should not be null");
 
