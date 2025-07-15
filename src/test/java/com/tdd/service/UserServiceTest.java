@@ -56,6 +56,26 @@ public class UserServiceTest {
 
     }
 
+    @DisplayName("Throw IllegalArgumentException when fields are empty")
+    @Test
+    void testCreateUser_WhenFieldsAreEmpty_returnIllegalArgumentException(){
+        String firstName = "";
+        String lastName = "";
+        String email = "";
+        String password = "";
+        String repeate_Password = "";
+        String expectedThrownMessage = "User fields can't be empty";
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, ()->{
+            User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
+        }, "When user fields are empty should return illegalArgumentException");
+
+        assertEquals(expectedThrownMessage, thrown.getMessage(), "Exception message should get return same");
+
+
+
+    }
+
 //    @Test
 //    void testCreateUser_whenUserCreated_shouldReturnSameFirstName(){
 //
