@@ -4,8 +4,7 @@ import com.tdd.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
 
@@ -27,6 +26,25 @@ public class UserServiceTest {
         assertEquals(lastName, user.getLastName(), "lastName does not get set");
         assertEquals(email, user.getEmail(), "email does not get set");
         assertNotNull(user.getId(), "UserId is missing");
+
+    }
+
+    @Test
+    void testCreateUser_WhenFirstNameIsEmpty_returnIllegalArgumentException(){
+//Arrange
+        UserService userService = new UserServiceImpl();
+        String firstName = " ";
+        String lastName = "Chandure";
+        String email = "chanduremanjiri@gmail.com";
+        String password = "12345668";
+        String repeate_Password = "12345668";
+        String expectedThrownMessage = "firstName can't be empty";
+//        Act & Assert
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, ()->{
+            User user = userService.createUser(firstName, lastName, email, password, repeate_Password);
+        }, "When firstName is empty should return illegalArgumentException");
+
+        assertEquals(expectedThrownMessage, thrown.getMessage(), "exception message should be same");
 
     }
 
